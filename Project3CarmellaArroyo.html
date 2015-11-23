@@ -1,0 +1,182 @@
+<!doctype html>
+
+<html lang="en">
+<head>
+ <title>Project Three</title>
+ <meta charset="utf-8">
+<style>
+canvas {
+ border: 1px solid black;;
+}
+</style>
+
+<script>
+var canvas;
+var context;
+var timer;
+var shapes;
+
+function makeShapes(){
+	shapes = [];
+	shapes.push(new circle());
+	shapes.push(new square());
+	shapes.push(new triangle());
+	shapes.push(new star());
+	shapes.push(new heart());
+}
+
+function degreesToRadians(degrees) {
+	 return (degrees * Math.PI)/180;
+ }
+
+function circle(){
+	this.x = Math.random()*canvas.width;
+	this.y = Math.random()*canvas.height;
+	this.vx = Math.random()*5;
+	this.vy = Math.random()*5;
+	this.color = "blue";
+	this.radius = 30;
+}
+function square(){
+	this.x = Math.random()*canvas.width;
+	this.y = Math.random()*canvas.height;
+	this.vx = Math.random()*10-5;
+	this.vy = Math.random()*10-5;
+	this.color ="purple";
+}
+function triangle(){
+	this.x = Math.random()*canvas.width;
+	this.y = Math.random()*canvas.height;
+	this.vx = Math.random()*10-5;
+	this.vy = Math.random()*10-5;
+	this.color = "green"; 
+}
+function star(){
+	this.x = Math.random()*canvas.width;
+	this.y = Math.random()*canvas.height;
+	this.vx = Math.random()*10-5;
+	this.vy = Math.random()*10-5;
+	this.color = "red"; 
+	this.radius = 70;
+}
+function heart(){
+	this.x = Math.random()*canvas.width;
+	this.y = Math.random()*canvas.height;
+	this.vx = Math.random()*10-5;
+	this.vy = Math.random()*10-5;
+	this.color = "orange";
+	this.radius = 100;
+}
+
+function moveShapes() {
+	 context.globalCompositeOperation = "source-over";
+	 context.fillStyle = "rgba(0, 0, 0, 0.3)";
+	 context.fillRect(0, 0, canvas.width, canvas.height);
+	 context.globalCompositeOperation = "lighter";
+	 for(var i = 0; i < shapes.length; i++)
+	 {
+		 var p = shapes[i];
+		 /Circle/
+		 if(i==0){
+			 context.beginPath();
+			 context.arc(p.x, p.y, p.radius, 0, degreesToRadians(360), true);
+			 context.fillStyle = p.color;
+			 context.fill();
+			 p.x += p.vx;
+			 p.y += p.vy;
+			 if(p.x < -50) p.x = canvas.width+50;
+			 if(p.y < -50) p.y = canvas.height+50;
+			 if(p.x > canvas.width+50) p.x = -50;
+			 if(p.y > canvas.height+50) p.y = -50;
+		}
+		/Square/
+		if(i==1){
+			context.beginPath();
+			context.rect(p.x, p.y, 100, 100);
+			context.fillStyle = p.color;
+			context.fill();
+			context.strokeStyle='black';
+			context.stroke();
+			p.x += p.vx;
+			p.y += p.vy;
+			if(p.x < -50) p.x = canvas.width+50;
+			if(p.y < -50) p.y = canvas.height+50;
+			if(p.x > canvas.width+50) p.x = -50;
+			if(p.y > canvas.height+50) p.y = -50;
+		}
+		/Triangle/
+		if(i==2){
+			var height = 100 * (Math.sqrt(3)/2);
+			context.beginPath();
+			context.moveTo(p.x, p.y);
+			context.lineTo(p.x+50, p.y+height);
+			context.lineTo(p.x-50, p.y+height);
+			context.lineTo(p.x, p.y);
+			context.fillStyle = p.color;
+			context.fill();
+			p.x += p.vx;
+			p.y += p.vy;
+			if(p.x < -50) p.x = canvas.width+50;
+			if(p.y < -50) p.y = canvas.height+50;
+			if(p.x > canvas.width+50) p.x = -50;
+			if(p.y > canvas.height+50) p.y = -50;
+		}
+		/Star/
+		if(i==3){
+			context.beginPath();
+			var alpha = (2 * Math.PI) / 10; 
+			var starXY = [p.x,p.y];
+
+			for(var i=0; i<11; i++){
+				var r = p.radius*((i%2+1)/2);
+				var theta = alpha*i;
+				context.lineTo((r*Math.sin(theta)+starXY[0]), (r*Math.cos(theta))+starXY[1]);
+			}
+
+			context.fillStyle = p.color;
+			context.fill();
+			p.x += p.vx;
+			p.y += p.vy;
+			if(p.x < -50) p.x = canvas.width+50;
+			if(p.y < -50) p.y = canvas.height+50;
+			if(p.x > canvas.width+50) p.x = -50;
+			if(p.y > canvas.height+50) p.y = -50;
+		}
+		/Heart/
+		if(i==4){
+			/*context.beginPath();
+		    context.moveTo(p.x,p.y);
+		    context.bezierCurveTo(75,37,70,25,50,25);
+		    context.bezierCurveTo(20,25,20,62.5,20,62.5);
+		    context.bezierCurveTo(20,80,40,102,75,120);
+		    context.bezierCurveTo(110,102,130,80,130,62.5);
+		    context.bezierCurveTo(130,62.5,130,25,100,25);		For some reason, bezier curve not working.
+		    context.bezierCurveTo(85,25,75,37,75,40);
+		    context.fillStyle = p.color;
+		    context.fill();
+		    p.x += p.vx;
+			p.y += p.vy;
+			if(p.x < -50) p.x = canvas.width+50;
+			if(p.y < -50) p.y = canvas.height+50;
+			if(p.x > canvas.width+50) p.x = -50;
+			if(p.y > canvas.height+50) p.y = -50;*/
+
+		}
+	 }
+ }
+ 
+
+window.onload = function(){
+	canvas = document.getElementById('canvas');
+	context = canvas.getContext('2d');
+	makeShapes();
+	timer = setInterval(moveShapes, 30);
+}
+</script>
+</head>
+<body>
+	<canvas id="canvas" width="900" height="600"></canvas>
+
+	Carmella Arroyo
+</body>
+</html>
